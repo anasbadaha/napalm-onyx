@@ -11,7 +11,7 @@ install:
 
 deploy:
   provider: pypi
-  user: dbarroso
+  user: anasbadaha
   password:
     secure: kt2RgomUtrf5zXo3CyF8B7SkolvKgALAO0s72WuMd0wTGmgOvoBlt10Vfc+G+wuVAYvW/JKdsYRceancAFyWLFgjLtNxbV4cJF2RXN956sYFSJ2VrtUiB19WuKZjX6024gMs780hC/3bdK1SDg/NAAHSR7u2cma3QgRcW6O+UG4=
   on:

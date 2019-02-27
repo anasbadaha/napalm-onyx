@@ -29,7 +29,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS',
     ],
-    url="https://github.com/napalm-automation-community/napalm-onyx.git",
+    url="https://github.com/napalm-automation-community/napalm-onyx",
     include_package_data=True,
     install_requires=reqs,
 )
