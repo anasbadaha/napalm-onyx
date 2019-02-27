@@ -1,9 +1,3 @@
-future
-coveralls
-pytest
-pytest-cov
-pytest-json
-pytest-pythonpath
-pylama
-flake8-import-order
--r requirements.txt
+napalm>=2.0.0
+netmiko>=1.4.3
+netaddr
