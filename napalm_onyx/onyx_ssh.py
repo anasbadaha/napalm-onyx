@@ -585,33 +585,6 @@ class ONYXSSHDriver(NetworkDriver):
         raise NotImplementedError("get_lldp_neighbors is not supported yet for onyx devices")
 
     def get_bgp_neighbors(self):
-        """BGP neighbor information.
-
-        Supports VRFs and IPv4 and IPv6 AFIs
-
-        {
-        "global": {
-            "router_id": "1.1.1.103",
-            "peers": {
-                "10.99.99.2": {
-                    "is_enabled": true,
-                    "uptime": -1,
-                    "remote_as": 22,
-                    "address_family": {
-                        "ipv4": {
-                            "sent_prefixes": -1,
-                            "accepted_prefixes": -1,
-                            "received_prefixes": -1
-                        }
-                    },
-                    "remote_id": "0.0.0.0",
-                    "local_as": 22,
-                    "is_up": false,
-                    "description": ""
-                 }
-            }
-        }
-        """
         raise NotImplementedError("get_bgp_neighbors is not supported yet for onyx devices")
 
     def _send_config_commands(self, commands):
@@ -714,61 +687,10 @@ class ONYXSSHDriver(NetworkDriver):
         return self._get_ntp_entity('Server')
 
     def __get_ntp_stats(self):
-        ntp_stats = []
-        command = 'show ntp peer-status'
-        output = self.device.send_command(command)
-        return ntp_stats
+        raise NotImplementedError("__get_ntp_stats is not supported yet for onyx devices")
 
     def get_interfaces_ip(self):
-
-        """
-          Get interface IP details. Returns a dictionary of dictionaries.
-
-          Sample output:
-          {
-              "Ethernet2/3": {
-                  "ipv4": {
-                      "4.4.4.4": {
-                          "prefix_length": 16
-                      }
-                  },
-                  "ipv6": {
-                      "2001:db8::1": {
-                          "prefix_length": 10
-                      },
-                      "fe80::2ec2:60ff:fe4f:feb2": {
-                          "prefix_length": "128"
-                      }
-                  }
-              },
-              "Ethernet2/2": {
-                  "ipv4": {
-                      "2.2.2.2": {
-                          "prefix_length": 27
-                      }
-                  }
-              }
-          }
-        """
-        interfaces_ip = {}
-        ipv4_command = 'show ip interface vrf default | json-print'
-        output_v4 = self.device.send_command(ipv4_command)
-        output_v4 = json.loads(output_v4)
-
-        v4_interfaces = {}
-        interface_mgmt0_status = output_v4[0].get('Interface mgmt0 status')
-        interface = 'mgmt0'
-        ip_address = interface_mgmt0_status[0].get('IP address')
-        netmask = interface_mgmt0_status[0].get('Netmask')
-        prefix_len = sum([bin(int(x)).count("1") for x in netmask.split(".")])
-        val = {'prefix_length': prefix_len}
-        v4_interfaces.setdefault(interface, {})[ip_address] = val
-
-        # Join data from intermediate dictionaries.
-        for interface, data in v4_interfaces.items():
-            interfaces_ip.setdefault(interface, {'ipv4': {}})['ipv4'] = data
-
-        return interfaces_ip
+        raise NotImplementedError("get_interfaces_ip is not supported yet for onyx devices")
 
     def get_mac_address_table(self):
         """
@@ -824,94 +746,10 @@ class ONYXSSHDriver(NetworkDriver):
         return mac_address_table
 
     def get_snmp_information(self):
-        snmp_information = {}
-        command = 'show running-config'
-        output = self.device.send_command(command)
-        snmp_config = napalm.base.helpers.textfsm_extractor(self, 'snmp_config', output)
-
-        if not snmp_config:
-            return snmp_information
-
-        snmp_information = {
-            'contact': py23_compat.text_type(''),
-            'location': py23_compat.text_type(''),
-            'community': {},
-            'chassis_id': py23_compat.text_type('')
-        }
-
-        for snmp_entry in snmp_config:
-            contact = py23_compat.text_type(snmp_entry.get('contact', ''))
-            if contact:
-                snmp_information['contact'] = contact
-            location = py23_compat.text_type(snmp_entry.get('location', ''))
-            if location:
-                snmp_information['location'] = location
-
-            community_name = py23_compat.text_type(snmp_entry.get('community', ''))
-            if not community_name:
-                continue
-
-            if community_name not in snmp_information['community'].keys():
-                snmp_information['community'][community_name] = {
-                    'acl': py23_compat.text_type(snmp_entry.get('acl', '')),
-                    'mode': py23_compat.text_type(snmp_entry.get('mode', '').lower())
-                }
-            else:
-                acl = py23_compat.text_type(snmp_entry.get('acl', ''))
-                if acl:
-                    snmp_information['community'][community_name]['acl'] = acl
-                mode = py23_compat.text_type(snmp_entry.get('mode', '').lower())
-                if mode:
-                    snmp_information['community'][community_name]['mode'] = mode
-        return snmp_information
+        raise NotImplementedError("get_snmp_information is not supported yet for onyx devices")
 
     def get_users(self):
-        _CISCO_TO_CISCO_MAP = {
-            'network-admin': 15,
-            'network-operator': 5
-        }
-
-        _DEFAULT_USER_DICT = {
-            'password': '',
-            'level': 0,
-            'sshkeys': []
-        }
-
-        users = {}
-        command = 'show running-config'
-        output = self.device.send_command(command)
-        section_username_tabled_output = napalm.base.helpers.textfsm_extractor(
-            self, 'users', output)
-
-        for user in section_username_tabled_output:
-            username = user.get('username', '')
-            if not username:
-                continue
-            if username not in users:
-                users[username] = _DEFAULT_USER_DICT.copy()
-
-            password = user.get('password', '')
-            if password:
-                users[username]['password'] = py23_compat.text_type(password.strip())
-
-            level = 0
-            role = user.get('role', '')
-            if role.startswith('priv'):
-                level = int(role.split('-')[-1])
-            else:
-                level = _CISCO_TO_CISCO_MAP.get(role, 0)
-            if level > users.get(username).get('level'):
-                # unfortunately on Cisco you can set different priv levels for the same user
-                # Good news though: the device will consider the highest level
-                users[username]['level'] = level
-
-            sshkeytype = user.get('sshkeytype', '')
-            sshkeyvalue = user.get('sshkeyvalue', '')
-            if sshkeytype and sshkeyvalue:
-                if sshkeytype not in ['ssh-rsa', 'ssh-dsa']:
-                    continue
-                users[username]['sshkeys'].append(py23_compat.text_type(sshkeyvalue))
-        return users
+        raise NotImplementedError("get_users is not supported yet for onyx devices")
 
     def traceroute(self,
                    destination,
@@ -923,16 +761,4 @@ class ONYXSSHDriver(NetworkDriver):
         raise NotImplementedError("traceroute is not supported yet for onyx devices")
 
     def get_config(self, retrieve='all'):
-        config = {
-            'startup': '',
-            'running': '',
-            'candidate': ''
-        }  # default values
-
-        if retrieve.lower() in ('running', 'all'):
-            command = 'show running-config'
-            config['running'] = py23_compat.text_type(self.device.send_command(command))
-        if retrieve.lower() in ('startup', 'all'):
-            command = 'show startup-config'
-            config['startup'] = py23_compat.text_type(self.device.send_command(command))
-        return config
+        raise NotImplementedError("get_config is not supported yet for onyx devices")
