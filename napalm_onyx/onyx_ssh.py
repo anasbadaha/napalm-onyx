@@ -112,6 +112,7 @@ def bgp_time_conversion(bgp_uptime):
     8w5d
     1y28w
     never
+
     """
     raise NotImplementedError("bgp_time_conversion is not supported yet for onyx devices")
 
@@ -140,7 +141,6 @@ def bgp_table_parser(bgp_table):
 
 def bgp_summary_parser(bgp_summary):
     """Parse 'show bgp all summary vrf' output information from NX-OS devices."""
-
     raise NotImplementedError("bgp_summary_parser is not supported yet for onyx devices")
 
 
@@ -181,8 +181,8 @@ class ONYXSSHDriver(NetworkDriver):
 
     @staticmethod
     def parse_uptime(uptime_str):
-        """
-        Extract the uptime string from the given Cisco IOS Device.
+        """Extract the uptime string from the given Cisco IOS Device.
+
         Return the uptime in seconds as an integer
         """
         # Initialize to zero
@@ -218,6 +218,7 @@ class ONYXSSHDriver(NetworkDriver):
              vrf=c.PING_VRF):
         """
         Execute ping on the device and returns a dictionary with the result.
+
         Output dictionary has one of following keys:
             * success
             * error
@@ -540,43 +541,31 @@ class ONYXSSHDriver(NetworkDriver):
         return output
 
     def disable_paging(self):
-        """
-        Run 'no cli session paging enable' command on switch.
-        """
+        """Run 'no cli session paging enable' command on switch."""
         no_paging_enable_command = 'no cli session paging enable'
         self.device.disable_paging(command=no_paging_enable_command)
 
     def enable(self):
-        """
-        Run 'enable' command on switch.
-        """
+        """Run 'enable' command on switch."""
         self.device.enable(cmd='enable', pattern=r'\s#\s')
 
     def config_terminal(self):
-        """
-        Run 'configure terminal' command on switch.
-        """
+        """Run 'configure terminal' command on switch."""
         self.device.config_mode(config_command='configure terminal', pattern=r'\(config\)')
 
     def exit(self):
-        """
-        Exist from enable mode for switch.
-        """
+        """Exist from enable mode for switch."""
         self.device.send_command("exit", expect_string=r'\(config\)')
 
     def show_vlans(self):
-        """
-        Return a lists of created vlans on switch
-        """
+        """Return a lists of created vlans on switch"""
         self.disable_paging()
         command = 'show vlan | json-print'
         output = self.device.send_command(command)
         return output
 
     def get_vlan(self, vlan_id):
-        """
-        Get Vlan details.
-        """
+        """Get Vlan details."""
         no_paging_enable_command = 'no cli session paging enable'
         self.device.send_command(no_paging_enable_command)
         command = 'show vlan id {0} | json-print'.format(vlan_id)
@@ -584,9 +573,7 @@ class ONYXSSHDriver(NetworkDriver):
         return output
 
     def create_vlan(self, vlan_id, interfaces):
-        """
-        Create vlan on switch and add interfaces to it..
-        """
+        """Create vlan on switch and add interfaces to it."""
         no_paging_enable_command = 'no cli session paging enable'
         self.device.disable_paging(command=no_paging_enable_command)
         vlan = self.get_vlan(vlan_id)
@@ -715,8 +702,8 @@ class ONYXSSHDriver(NetworkDriver):
         raise NotImplementedError("get_interfaces_ip is not supported yet for onyx devices")
 
     def get_mac_address_table(self):
-        """
-        Return a lists of dictionaries. Each dictionary represents an entry in the MAC Address
+        """Return a lists of dictionaries. Each dictionary represents an entry in the MAC Address
+
         Table, having the following keys
             * mac (string)
             * interface (string)
