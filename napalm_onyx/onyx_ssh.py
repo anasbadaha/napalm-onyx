@@ -15,6 +15,7 @@
 
 """
 Napalm driver for Onyx.
+
 Read https://napalm.readthedocs.io for more information.
 """
 
@@ -70,6 +71,19 @@ ASN_REGEX = r"[\d\.]+"
 
 
 def parse_intf_section(interface):
+    """Parse a single entry from show interfaces output.
+
+    Different cases:
+    mgmt0 is up
+    admin state is up
+
+    Ethernet2/1 is up
+    admin state is up, Dedicated Interface
+
+    Vlan1 is down (Administratively down), line protocol is down, autostate enabled
+
+    Ethernet154/1/48 is up (with no 'admin state')
+    """
     raise NotImplementedError("parse_intf_section is not supported yet for onyx devices")
 
 
@@ -84,11 +98,26 @@ def convert_hhmmss(hhmmss):
 
 
 def bgp_time_conversion(bgp_uptime):
+    """Convert string time to seconds.
+
+    Examples
+    00:14:23
+    00:13:40
+    00:00:21
+    00:00:13
+    00:00:49
+    1d11h
+    1d17h
+    1w0d
+    8w5d
+    1y28w
+    never
+    """
     raise NotImplementedError("bgp_time_conversion is not supported yet for onyx devices")
 
 
 def bgp_normalize_table_data(bgp_table):
-    """The 'show bgp all summary vrf all' table can have entries that wrap multiple lines.
+    """Show bgp all summary vrf all table can have entries that wrap multiple lines.
 
     2001:db8:4:701::2
                 4 65535  163664  163693      145    0    0     3w2d 3
@@ -101,7 +130,7 @@ def bgp_normalize_table_data(bgp_table):
 
 
 def bgp_table_parser(bgp_table):
-    """Generator that parses a line of bgp summary table and returns a dict compatible with NAPALM
+    """Generate that parses a line of bgp summary table and returns a dict compatible with NAPALM
 
     Example line:
     10.2.1.14       4    10  472516  472238      361    0    0     3w1d 9
@@ -117,6 +146,7 @@ def bgp_summary_parser(bgp_summary):
 
 class ONYXSSHDriver(NetworkDriver):
     def __init__(self, hostname, username, password, timeout=60, optional_args=None):
+        """Initialization function for ONYXSSHDriver Class."""
         if optional_args is None:
             optional_args = {}
         self.hostname = hostname
@@ -510,25 +540,43 @@ class ONYXSSHDriver(NetworkDriver):
         return output
 
     def disable_paging(self):
+        """
+        Run 'no cli session paging enable' command on switch.
+        """
         no_paging_enable_command = 'no cli session paging enable'
         self.device.disable_paging(command=no_paging_enable_command)
 
     def enable(self):
+        """
+        Run 'enable' command on switch.
+        """
         self.device.enable(cmd='enable', pattern=r'\s#\s')
 
     def config_terminal(self):
+        """
+        Run 'configure terminal' command on switch.
+        """
         self.device.config_mode(config_command='configure terminal', pattern=r'\(config\)')
 
     def exit(self):
+        """
+        Exist from enable mode for switch.
+        """
         self.device.send_command("exit", expect_string=r'\(config\)')
 
     def show_vlans(self):
+        """
+        Return a lists of created vlans on switch
+        """
         self.disable_paging()
         command = 'show vlan | json-print'
         output = self.device.send_command(command)
         return output
 
     def get_vlan(self, vlan_id):
+        """
+        Get Vlan details.
+        """
         no_paging_enable_command = 'no cli session paging enable'
         self.device.send_command(no_paging_enable_command)
         command = 'show vlan id {0} | json-print'.format(vlan_id)
@@ -536,6 +584,9 @@ class ONYXSSHDriver(NetworkDriver):
         return output
 
     def create_vlan(self, vlan_id, interfaces):
+        """
+        Create vlan on switch and add interfaces to it..
+        """
         no_paging_enable_command = 'no cli session paging enable'
         self.device.disable_paging(command=no_paging_enable_command)
         vlan = self.get_vlan(vlan_id)
@@ -589,14 +640,13 @@ class ONYXSSHDriver(NetworkDriver):
         return cli_output
 
     def get_arp_table(self):
-        """
-        Get arp table information.
+        """Get arp table information.
 
         Return a list of dictionaries having the following set of keys:
             * interface (string)
             * mac (string)
             * ip (string)
-            * age (float)
+            * type (string)
 
         For example::
             [
@@ -610,7 +660,7 @@ class ONYXSSHDriver(NetworkDriver):
                     'interface': 'MgmtEth0/RSP0/CPU0/0',
                     'mac'       : '66:0e:94:96:e0:ff',
                     'ip'        : '172.17.17.2',
-                    'age'       : 14.0
+                    'type'       : Ethernet
                 }
             ]
         """
