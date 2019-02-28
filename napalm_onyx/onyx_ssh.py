@@ -666,7 +666,7 @@ class ONYXSSHDriver(NetworkDriver):
 
     def get_mac_address_table(self):
         """
-        Returns a lists of dictionaries. Each dictionary represents an entry in the MAC Address
+        Return a lists of dictionaries. Each dictionary represents an entry in the MAC Address
         Table, having the following keys
             * mac (string)
             * interface (string)
@@ -688,10 +688,7 @@ class ONYXSSHDriver(NetworkDriver):
 
         Number of unicast:    3
         Number of multicast:  0
-
-
         """
-
         mac_address_table = []
         command = 'show mac-address-table'
         mac_table_output = self.device.send_command(command)

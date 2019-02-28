@@ -21,6 +21,7 @@ from napalm.base.test.base import TestConfigNetworkDriver
 class TestConfigONYXSSHDriverDriver(unittest.TestCase, TestConfigNetworkDriver):
     @classmethod
     def setUpClass(cls):
+        """Test Config for ONYXSSHDriverDriver."""
         hostname = "127.0.0.1"
         username = "test"
         password = "test"
