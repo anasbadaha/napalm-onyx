@@ -98,22 +98,7 @@ def convert_hhmmss(hhmmss):
 
 
 def bgp_time_conversion(bgp_uptime):
-    """Convert string time to seconds.
-
-    Examples
-    00:14:23
-    00:13:40
-    00:00:21
-    00:00:13
-    00:00:49
-    1d11h
-    1d17h
-    1w0d
-    8w5d
-    1y28w
-    never
-
-    """
+    """Convert string time to seconds."""
     raise NotImplementedError("bgp_time_conversion is not supported yet for onyx devices")
 
 
