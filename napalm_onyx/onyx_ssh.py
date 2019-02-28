@@ -70,19 +70,6 @@ ASN_REGEX = r"[\d\.]+"
 
 
 def parse_intf_section(interface):
-    """Parse a single entry from show interfaces output.
-
-    Different cases:
-    mgmt0 is up
-    admin state is up
-
-    Ethernet2/1 is up
-    admin state is up, Dedicated Interface
-
-    Vlan1 is down (Administratively down), line protocol is down, autostate enabled
-
-    Ethernet154/1/48 is up (with no 'admin state')
-    """
     raise NotImplementedError("parse_intf_section is not supported yet for onyx devices")
 
 
@@ -97,21 +84,6 @@ def convert_hhmmss(hhmmss):
 
 
 def bgp_time_conversion(bgp_uptime):
-    """Convert string time to seconds.
-
-    Examples
-    00:14:23
-    00:13:40
-    00:00:21
-    00:00:13
-    00:00:49
-    1d11h
-    1d17h
-    1w0d
-    8w5d
-    1y28w
-    never
-    """
     raise NotImplementedError("bgp_time_conversion is not supported yet for onyx devices")
 
 
