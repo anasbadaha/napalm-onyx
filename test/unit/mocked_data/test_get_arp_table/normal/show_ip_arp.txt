@@ -1,3 +1,4 @@
+Arp_table_output
 VRF Name default:
   Total number of entries: 18
 

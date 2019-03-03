@@ -68,6 +68,7 @@ class TestGetter(BaseTestGetters):
 
     def test_method_signatures(self):
         """Test that all methods have the same signature.
+
         There is little to test with this function.
         """
-        raise NotImplementedError
+        pass

@@ -467,8 +467,8 @@ class ONYXSSHDriver(NetworkDriver):
                 model = line.split()[2]
 
         for line in show_hosts.splitlines():
-            if "Hostname" in line:
-                _, hostname = line.split("Hostname")
+            if "Hostname: " in line:
+                _, hostname = line.split("Hostname: ")
                 break
 
         interface_list = []
