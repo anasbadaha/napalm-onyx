@@ -41,7 +41,7 @@ class PatchedONYXSSHDriver(onyx_ssh.ONYXSSHDriver):
         pass
 
     def is_alive(self):
-        return {"is_alive": True}  # In testing everything works..
+        return {"is_alive": True}
 
     def open(self):
         pass
