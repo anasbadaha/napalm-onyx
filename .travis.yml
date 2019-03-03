@@ -7,8 +7,7 @@ python:
 
 install:
   - pip install -r requirements-dev.txt
-  - pip install .
-  - pip install -e git+https://github.com/napalm-automation/napalm-base.git@develop#egg=napalm-base
+  - pip install tox-travis
   - pip install coveralls
 
 deploy:
