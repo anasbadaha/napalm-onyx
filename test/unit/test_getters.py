@@ -43,3 +43,25 @@ class TestGetter(BaseTestGetters):
             assert helpers.test_model(modale_mac_address_table, mac_table_entry)
 
         return get_mac_address_table
+
+    @wrap_test_cases
+    def test_get_arp_table(self, test_case):
+        """Test get_arp_table."""
+        modale_arp_table = {"interface": text_type, "mac": text_type, "ip": text_type, "type": text_type}
+        get_arp_table = self.device.get_arp_table()
+        assert len(get_arp_table) > 0
+
+        for arp_entry in get_arp_table:
+            assert helpers.test_model(modale_arp_table, arp_entry)
+
+        return get_arp_table
+
+    @wrap_test_cases
+    def test_get_arp_table_with_vrf(self, test_case):
+        """Test get_arp_table with vrf."""
+        raise NotImplementedError
+
+    @wrap_test_cases
+    def test_get_interfaces(self, test_case):
+        """There is little to test with this function."""
+        raise NotImplementedError
