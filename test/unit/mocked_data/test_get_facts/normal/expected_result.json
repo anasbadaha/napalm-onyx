@@ -4,8 +4,9 @@
     "uptime": 121831,
     "vendor": "Mellanox",
     "os_version": "3.7.1160",
-    "interface_list": ["mgmt1", "mgmt0", "Eth1/1", "Eth1/2", "Eth1/3", "Eth1/4", "Eth1/5", "Eth1/6", "Eth1/7",
-      "Eth1/8", "Eth1/9", "Eth1/10", "Eth1/11", "Eth1/12", "Eth1/13", "Eth1/14", "Eth1/15", "Eth1/16", "Eth1/17",
-      "Eth1/18", "Eth1/19", "Eth1/20", "Eth1/21", "Eth1/22", "Eth1/23", "Eth1/24", "Eth1/25", "Eth1/26", "Eth1/27",
-      "Eth1/28", "Eth1/29", "Eth1/30", "Eth1/31", "Eth1/32"]
+    "interface_list": ["mgmt1", "mgmt0", "Ethernet1/1", "Ethernet1/2", "Ethernet1/3", "Ethernet1/4", "Ethernet1/5",
+      "Ethernet1/6", "Ethernet1/7", "Ethernet1/8", "Ethernet1/9", "Ethernet1/10", "Ethernet1/11", "Ethernet1/12",
+      "Ethernet1/13", "Ethernet1/14", "Ethernet1/15", "Ethernet1/16", "Ethernet1/17", "Ethernet1/18", "Ethernet1/19",
+      "Ethernet1/20", "Ethernet1/21", "Ethernet1/22", "Ethernet1/23", "Ethernet1/24", "Ethernet1/25", "Ethernet1/26",
+      "Ethernet1/27", "Ethernet1/28", "Ethernet1/29", "Ethernet1/30", "Ethernet1/31", "Ethernet1/32"]
 }
