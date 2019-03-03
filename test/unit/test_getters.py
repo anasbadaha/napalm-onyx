@@ -26,3 +26,20 @@ class TestGetter(BaseTestGetters):
         facts = self.device.get_facts()
         assert helpers.test_model(modale_facts, facts)
         return facts
+
+    @wrap_test_cases
+    def test_get_mac_address_table(self, test_case):
+        """Test get_mac_address_table."""
+        modale_mac_address_table = {
+            "mac": text_type,
+            "interface": text_type,
+            "type": text_type,
+            "vlan": int,
+        }
+        get_mac_address_table = self.device.get_mac_address_table()
+        assert len(get_mac_address_table) > 0
+
+        for mac_table_entry in get_mac_address_table:
+            assert helpers.test_model(modale_mac_address_table, mac_table_entry)
+
+        return get_mac_address_table
